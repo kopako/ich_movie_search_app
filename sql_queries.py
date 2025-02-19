@@ -29,3 +29,13 @@ class FilmQueries:
                 """
 class GenreQueries:
     GENRES = "SELECT DISTINCT name FROM category"
+
+class MongoQueries:
+    TOP_PIPLINES = [
+      { "$addFields": { "params": { "$setUnion": ["$params", []] } } },
+      { "$unwind": { "path": "$params", "preserveNullAndEmptyArrays": False } },
+      { "$group": { "_id": "$params", "count": { "$sum": 1 } } },
+      { "$sort": { "count": -1 } },
+      { "$limit": 3 },
+      { "$group": { "_id": None, "top_searches": { "$push": "$_id" } } }
+    ]

@@ -36,4 +36,5 @@ class SearchController:
 
     def top_searches(self, limit: int=3):
         print("Top searches:")
-        MongoService().list_collections()
+        for doc in MongoService().top_three():
+            print(*doc['top_searches'], sep='\n')

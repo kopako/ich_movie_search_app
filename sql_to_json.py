@@ -1,5 +1,4 @@
 import re
-from datetime import datetime
 
 class SQLToJSON:
     select_pattern = re.compile(r'SELECT\s+(.+?)\s+FROM', re.IGNORECASE | re.DOTALL)
@@ -33,8 +32,6 @@ class SQLToJSON:
         from_match = self.from_pattern.search(self.sql_query)
         if from_match:
             self.from_table = from_match.group(1).strip()
-            # if from_match.group(2):
-            #     self.from_table += f' AS {from_match.group(2).strip()}'
 
     def parse_join(self):
         join_matches = self.join_pattern.findall(self.sql_query)
@@ -49,7 +46,6 @@ class SQLToJSON:
 
     def parse_where(self):
         where_match = self.where_pattern.search(self.sql_query)
-        print(where_match)
         if where_match:
             self.where_conditions = [cond.strip() for cond in self.and_or_pattern.split(where_match.group(1))]
 
@@ -71,5 +67,4 @@ class SQLToJSON:
         if self.order_by:
             result['order_by'] = self.order_by
         result['full_query'] = self.sql_query
-        result['creation_timestamp'] = datetime.now().isoformat()
         return result
