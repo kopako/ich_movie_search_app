@@ -42,7 +42,16 @@ def load_decorator(func):
         else:
             print("No query found in the function arguments.")
         if inputs['params']:
+            inputs['params'] = preprocess_params(inputs['params'])
             inputs['creation_time'] = datetime.now()
             MongoService().parameters_collection.insert_one(inputs)
         return func(*args, **kwargs)
     return wrapper
+
+
+def preprocess_params(params):
+    """
+    Keywords params are wrapped in "%"(it's a wildcard for SQL).
+    Some methods take a list of same keywords.
+    """
+    return list(set(param.strip('%') if not isinstance(param, int) else param for param in params))
