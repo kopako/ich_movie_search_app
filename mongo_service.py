@@ -1,6 +1,7 @@
 from datetime import datetime
 import functools
 import logging
+from typing import Any
 
 import pymongo
 import os
@@ -23,15 +24,15 @@ class MongoService:
     parameters_collection = db['film_queries_parameters']
 
     def top_three(self):
-        return self.parameters_collection.aggregate(sql_queries.MongoQueries.TOP_PIPLINES)
+        return self.parameters_collection.aggregate(sql_queries.MongoQueries.TOP_PIPELINES)
 
-def load_decorator(func):
+def save_request_to_mongo(func):
     """
     Decorator that saves the SQL query and params from the function's argument to a mongodb.
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        inputs = dict()
+        inputs: dict[str, None | list[Any] | datetime | Any] = dict()
         inputs['params'] = kwargs.get('params') or (args[2] if len(args)>2 else None)
         query = kwargs.get('query') or (args[1] if args else None)
         if query:

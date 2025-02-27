@@ -1,25 +1,27 @@
 import logging
 
-from mongo_connection import MongoService
+from mongo_service import MongoService
 from sql_service import SqlService
 
 
 class SearchController:
     def __init__(self):
-        self.sql_service = SqlService()
         self.exit_flag = False
 
     def exit(self):
         self.exit_flag = True
 
-    def search_by_keyword(self):
+    @staticmethod
+    def search_by_keyword():
         print("Search by keyword:")
         keyword = input('Enter keyword: ')
-        self.sql_service.movies_by_keyword(keyword)
+        print(*SqlService().movies_by_keyword(keyword), sep='\n')
 
-    def search_by_genre_and_year(self):
+    @staticmethod
+    def search_by_genre_and_year():
+        genre = ''
         print("Search by genre and year:")
-        genre_names = [row.get('name') for row in self.sql_service.genre_names()]
+        genre_names = [row.get('name') for row in SqlService().genre_names()]
         for index, genre_name in enumerate(genre_names):
             print(f"{index}. {genre_name}")
         genre_choice = input("Select genre: ")
@@ -29,12 +31,12 @@ class SearchController:
             genre = genre_choice
         else:
             logging.warning("Invalid genre")
-            self.search_by_genre_and_year()
+            SearchController.search_by_genre_and_year()
         year = int(input("Select year: "))
+        print(*SqlService().movies_by_genre_and_year(genre=genre, year=year), sep='\n')
 
-        return self.sql_service.movies_by_genre_and_year(genre=genre, year=year)
-
-    def top_searches(self, limit: int=3):
+    @staticmethod
+    def top_searches():
         print("Top searches:")
         for doc in MongoService().top_three():
             print(*doc['top_searches'], sep='\n')

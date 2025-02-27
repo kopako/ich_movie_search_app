@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 load_dotenv()
 from search_controller import SearchController
@@ -26,14 +25,13 @@ def entry_point():
                 method()
             else:
                 print("Invalid choice. Please enter a number within the range.")
-        except ValueError as er:
+        except ValueError:
             print("Invalid input. Please enter a number.")
 
 def tear_down():
     SqlConnection().tear_down()
 
 if __name__ == "__main__":
-    print(os.getenv('MONGO_DB'))
     try:
         entry_point()
     finally:

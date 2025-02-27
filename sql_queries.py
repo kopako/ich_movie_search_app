@@ -1,7 +1,9 @@
 class FilmQueries:
     BY_GENRE_AND_RELEASE_YEAR = """
-                SELECT
-                    *
+                SELECT DISTINCT
+                        f.film_id,
+                        f.title,
+                        f.description
                 FROM
                     film f
                 JOIN film_category fc
@@ -11,10 +13,14 @@ class FilmQueries:
                     AND c.name = %s
                 WHERE
                     f.release_year = %s
-                ORDER BY f.rating
+                ORDER BY f.film_id
             """
     BY_KEYWORD = """
-                    SELECT * FROM film f
+                    SELECT DISTINCT
+                        f.film_id,
+                        f.title,
+                        f.description
+                    FROM film f
                     JOIN film_category fc ON f.film_id = fc.film_id
                     JOIN category c ON fc.category_id = c.category_id
                     JOIN film_actor fa ON f.film_id = fa.film_id
@@ -25,13 +31,13 @@ class FilmQueries:
                         OR a.first_name LIKE %s
                         OR a.last_name LIKE %s
                         OR c.name LIKE %s
-                    ORDER BY f.rating
+                    ORDER BY f.film_id
                 """
 class GenreQueries:
     GENRES = "SELECT DISTINCT name FROM category"
 
 class MongoQueries:
-    TOP_PIPLINES = [
+    TOP_PIPELINES = [
       { "$addFields": { "params": { "$setUnion": ["$params", []] } } },
       { "$unwind": { "path": "$params", "preserveNullAndEmptyArrays": False } },
       { "$group": { "_id": "$params", "count": { "$sum": 1 } } },

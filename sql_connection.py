@@ -1,11 +1,9 @@
-from locale import normalize
-
 import pymysql
 import pymysql.cursors
 from pymysql.connections import Connection
 import logging
 import os
-from mongo_connection import load_decorator
+from mongo_service import save_request_to_mongo
 from singleton import SingletonMeta
 
 
@@ -25,7 +23,7 @@ class SqlConnection(metaclass=SingletonMeta):
         self.cursor.close()
         self.cnx.close()
 
-    @load_decorator
+    @save_request_to_mongo
     def execute(self, query, *params):
         normalized_query = ' '.join(line.strip() for line in query.splitlines()).strip()
         logging.info('Query to execute: ',normalized_query)
