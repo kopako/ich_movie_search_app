@@ -1,4 +1,4 @@
-from sql_queries import FilmQueries, GenreQueries
+from queries import FilmQueries, GenreQueries
 from sql_connection import SqlConnection
 
 

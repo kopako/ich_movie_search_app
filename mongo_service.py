@@ -6,7 +6,7 @@ from typing import Any
 import pymongo
 import os
 
-import sql_queries
+import queries
 from singleton import SingletonMeta
 from sql_to_json import SQLToJSON
 
@@ -24,7 +24,7 @@ class MongoService:
     parameters_collection = db['film_queries_parameters']
 
     def top_three(self):
-        return self.parameters_collection.aggregate(sql_queries.MongoQueries.TOP_PIPELINES)
+        return self.parameters_collection.aggregate(queries.MongoQueries.TOP_PIPELINES)
 
 def save_request_to_mongo(func):
     """
