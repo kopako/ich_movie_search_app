@@ -15,7 +15,11 @@ class SearchController:
     def search_by_keyword():
         print("Search by keyword:")
         keyword = input('Enter keyword: ')
-        print(*SqlService().movies_by_keyword(keyword), sep='\n')
+        result = SqlService().movies_by_keyword(keyword)
+        if result:
+            print(*result, sep='\n')
+        else:
+            print(NOT_FOUND)
 
     @staticmethod
     def search_by_genre_and_year():
@@ -25,7 +29,7 @@ class SearchController:
         for index, genre_name in enumerate(genre_names):
             print(f"{index}. {genre_name}")
         genre_choice = input("Select genre: ")
-        if genre_choice.isnumeric() and len(genre_names) > int(genre_choice) > 0:
+        if genre_choice.isnumeric() and len(genre_names) > int(genre_choice) >= 0:
             genre = genre_names[int(genre_choice)]
         elif genre_choice in genre_names:
             genre = genre_choice
@@ -33,10 +37,15 @@ class SearchController:
             logging.warning("Invalid genre")
             SearchController.search_by_genre_and_year()
         year = int(input("Select year: "))
-        print(*SqlService().movies_by_genre_and_year(genre=genre, year=year), sep='\n')
+        result = SqlService().movies_by_genre_and_year(genre=genre, year=year)
+        if result:
+            print(*result, sep='\n')
+        else:
+            print(NOT_FOUND)
 
     @staticmethod
     def top_searches():
         print("Top searches:")
         for doc in MongoService().top_three():
             print(*doc['top_searches'], sep='\n')
+NOT_FOUND = "(◡︵◡) Nothing found (◡︵◡)"
